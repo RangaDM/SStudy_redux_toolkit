@@ -1,23 +1,46 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, nanoid } from "@reduxjs/toolkit";
 
-const initialState = {
-    count : 10,
-    brands:[]
-}
+const initialState = [
+    {
+        id:1,
+        price:25000,
+        brand:"hp",
+        spec:{
+            ram:4,
+            storage:256,
+            processor:"i3"
+        }
+    }
+]
 
 const laptopSlice = createSlice({
     name: "laptop",
     initialState,
     reducers:{
-        addLaptop: (state , action) => {
-            state.count = state.count + action.payload
-        },
-        removeLaptop: (state , action) => {
-            state.count = state.count - action.payload
+        addLaptop: {
+            reducer : (state , action) => {
+                state.push(action.payload)
+            },
+            prepare: (brand , price , ram , storage , processor) => {
+                return {
+                    payload:{
+                        id:nanoid(),
+                        brand:brand,
+                        price:price,
+                        spec:{
+                            ram:ram,
+                            storage:storage,
+                            processor:processor,
+                        }
+                    }
+                }
+            }
         },
     }
 })
 
-export const {addLaptop , removeLaptop} = laptopSlice.actions
+export const laptopSliceSelector = (store) => store.laptopSlice;
+
+export const {addLaptop} = laptopSlice.actions
 
 export default laptopSlice.reducer
